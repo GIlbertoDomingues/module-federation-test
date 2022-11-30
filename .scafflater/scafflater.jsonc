@@ -1,0 +1,49 @@
+{
+  "template": {
+    "name": "pdd-template-microfrontend",
+    "description": "Template to build microfrontend using module federation",
+    "version": "1.0.0",
+    "template": {
+      "name": "scafflater-template",
+      "version": "0.0.1",
+      "source": {
+        "name": "github",
+        "key": "https://github.com/scafflater/scafflater-template",
+        "github": {
+          "baseUrl": "https://github.com",
+          "baseUrlApi": "https://api.github.com"
+        }
+      }
+    },
+    "config": {},
+    "parameters": [
+      {
+        "type": "input",
+        "name": "domain",
+        "message": "VS or Chapter",
+        "regex": "[a-z0-9-]+",
+        "scope": "global"
+      },
+      {
+        "type": "input",
+        "name": "system",
+        "message": "Project or Product",
+        "regex": "[a-z0-9-]+",
+        "scope": "global"
+      },
+      {
+        "type": "input",
+        "name": "component",
+        "message": "Component Name",
+        "regex": "[a-z0-9-]+",
+        "scope": "global"
+      },
+      {
+        "type": "input",
+        "name": "componentDescription",
+        "message": "Component Description",
+        "scope": "global"
+      }
+    ]
+  }
+}

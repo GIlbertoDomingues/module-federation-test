@@ -1,0 +1,70 @@
+# @scf-option {"ignore": true}
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+      - fix/*
+      - release/*
+    paths-ignore:
+      - '**/*.md'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+name: Standard
+
+env:
+  app_name: pdd-template-microfrontend
+
+jobs:
+  ci:
+    name: CI - Build and Test
+    runs-on: ['core-shr']
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@grupoboticario'
+
+      - name: install dependencies
+        run: yarn install --immutable --immutable-cache --check-cache
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GHA_PACKAGES }}
+
+      - name: Lint Check
+        run: yarn lint-check
+
+      - name: Prettier Check
+        run: yarn prettier-check
+
+      - name: Teste
+        run: yarn test:coverage
+
+      - name: Create env file
+        run: cp .env.example .env.production
+
+      - name: build
+        run: yarn build:prd
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=gboticario
+            -Dsonar.projectKey=${{ env.app_name }}
+            -Dsonar.projectName=${{ env.app_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
